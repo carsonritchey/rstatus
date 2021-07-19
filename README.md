@@ -1,3 +1,5 @@
 simple script for writing to the DWM status bar
+(requires status2d patch for now)
 
-expects status2d patch (formatting will be all weird if you don't have it)
+flags:
+	-b ~ displays battery percentage

@@ -1,8 +1,7 @@
 extern crate chrono;
 
 use chrono::Local;
-use std::process::Command;
-use std::{thread, time};
+use std::{thread, time, env, process::Command};
 
 mod battery;
 use battery::battery_percentage;
@@ -10,12 +9,22 @@ use battery::battery_percentage;
 const SEPERATOR: char = '';
 //const HEIGHT = 13;
 
-fn main() {
 
+fn main() {
+    let mut battery = false;
+    let args: Vec<String> = env::args().collect();
+    for arg in args {
+        if arg == "-b" {
+            battery = true;
+        }
+    }
 
     loop {
         let mut s: String = SEPERATOR.to_string();
-        s = format!("{} {}% {} {}", s, battery_percentage(), SEPERATOR, get_time());
+        if battery {
+            s = format!("{} {}% {}", SEPERATOR, battery_percentage(), s);
+        }
+        s = format!("{} {}", s, get_time());
         //s = format!("^r1,1,11,11^^f{}^ {}", 11, s);
 
         set_bar(s);
@@ -29,7 +38,9 @@ fn set_bar(s: String) {
         .arg("-name")
         .arg(s)
         .spawn()
-        .expect("unable to envoke xsetroot command");
+        .expect("unable to envoke xsetroot command")
+        .wait()
+        .expect("unable to wait for xsetroot command");
 }
 
 fn get_time() -> String {
