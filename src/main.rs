@@ -4,15 +4,19 @@ use chrono::Local;
 use std::process::Command;
 use std::{thread, time};
 
+mod battery;
+use battery::battery_percentage;
+
 const SEPERATOR: char = '';
-// time format:  %I:%M %p  %a, %b %d, %Y
+//const HEIGHT = 13;
 
 fn main() {
-    let mut n = 11;
+
+
     loop {
         let mut s: String = SEPERATOR.to_string();
-        s = format!("{} {}", s, get_time());
-        s = format!("^r1,1,11,11^^f{}^ {}", n, s);
+        s = format!("{} {}% {} {}", s, battery_percentage(), SEPERATOR, get_time());
+        //s = format!("^r1,1,11,11^^f{}^ {}", 11, s);
 
         set_bar(s);
 
