@@ -1,35 +1,57 @@
 extern crate chrono;
 
+mod battery;
+mod ram;
+mod cpu;
+
 use chrono::Local;
 use std::{thread, time, env, process::Command};
 
-mod battery;
-use battery::battery_percentage;
 
 const SEPERATOR: char = '';
 //const HEIGHT = 13;
 
+//cont HEIGHT_FLAG: &str = "--height=";
+//const SEPERATOR_FLAG: &str = "--seperator=";
+const SLEEP_FLAG: &str = "-s=";
+const BATTERY_FLAG: &str = "-b";
+const BATTERY_DRY_FLAG: &str = "-b=dry";
 
 fn main() {
     let mut battery = false;
+    let mut battery_graphics = true;
+
+    let mut sleep_length: u64 = 1;
+
     let args: Vec<String> = env::args().collect();
+
     for arg in args {
-        if arg == "-b" {
+        if arg == BATTERY_FLAG {
             battery = true;
+        }
+        else if arg == BATTERY_DRY_FLAG {
+            battery = true;
+            battery_graphics = false;
         }
     }
 
     loop {
         let mut s: String = SEPERATOR.to_string();
+
+        s = format!("{} ram: {}% {}", SEPERATOR, ram::percent_used(), s);
+
         if battery {
-            s = format!("{} {}% {}", SEPERATOR, battery_percentage(), s);
+            if battery_graphics {
+                s = format!(" {} {} {}% {}", SEPERATOR, battery::battery_draw_string(), battery::battery_percentage(), s);
+            } else {
+                s = format!(" {} {}% {}", SEPERATOR, battery::battery_percentage(), s);
+            }
         }
         s = format!("{} {}", s, get_time());
-        //s = format!("^r1,1,11,11^^f{}^ {}", 11, s);
 
         set_bar(s);
 
-        sleep_in_seconds(1);
+        sleep_in_seconds(sleep_length);
     }
 }
 
