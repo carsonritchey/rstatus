@@ -45,7 +45,7 @@ pub fn battery_percentage() -> u16 {
 }
 
 const BATTERY_FULL: &str = "^r4,1,3,2^^r2,3,7,10^^f9^";
-const CHARGING: &str = "hey im charging";
+const CHARGING: &str = "";
 pub fn battery_draw_string() -> String {
     let mut s: String = String::new();
     if is_charging() {

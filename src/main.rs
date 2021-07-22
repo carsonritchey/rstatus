@@ -16,10 +16,14 @@ const SEPERATOR: char = '';
 const SLEEP_FLAG: &str = "-s=";
 const BATTERY_FLAG: &str = "-b";
 const BATTERY_DRY_FLAG: &str = "-b=dry";
+const OUTPUT_FLAG: &str = "-o";
+
+const CONFIG_DIR: &str = "~/.config/rstatus/config";
 
 fn main() {
     let mut battery = false;
     let mut battery_graphics = true;
+    let mut output = false;
 
     let mut sleep_length: u64 = 1;
 
@@ -32,6 +36,9 @@ fn main() {
         else if arg == BATTERY_DRY_FLAG {
             battery = true;
             battery_graphics = false;
+        }
+        else if arg == OUTPUT_FLAG {
+            output = true;
         }
     }
 
@@ -49,6 +56,10 @@ fn main() {
         }
         s = format!("{} {}", s, get_time());
 
+        if output {
+            print!("{}", s);
+            return;
+        }
         set_bar(s);
 
         sleep_in_seconds(sleep_length);
